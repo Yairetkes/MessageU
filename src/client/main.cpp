@@ -11,10 +11,10 @@
 using namespace std;
 using namespace serversock;
 
-struct serversock::objectData data;
+struct serversock::objectData myData;
 
 int main(int argc, char *argv[]) {
-    objectData *pointer = &data;
+    objectData *pointer = &myData;
     serversock::createConnection();
     //while (1 == 1) {
         long i = 1000000;

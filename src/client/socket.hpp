@@ -19,7 +19,10 @@
 // comment
 // release this when working on windows:
     #include <winsock2.h>
+    #include <Ws2tcpip.h>
     #include <windows.h>
+
+#pragma comment(lib, "Ws2_32.lib")
 #endif
 
 // need link with Ws2_32.lib
