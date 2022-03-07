@@ -16,6 +16,7 @@
     #include <sys/socket.h>
     #include <unistd.h>
 #else
+// comment
 // release this when working on windows:
     #include <winsock2.h>
     #include <windows.h>
