@@ -3,11 +3,12 @@ import socket
 import struct
 import os
 import threading
+import request
 
 
 # key = 4
 
-class server_connection:
+class serverConnection:
     def __init__(self, host_ip: str, info_file_name: str):
         """ 
         initializing the object.
@@ -58,26 +59,11 @@ class server_connection:
         with the client.
         """
 
-        buff_len = 14
+        # TODO: change buffer length.
+        buff_len = 438
         with conn:
             print('Connected by', addr)
 
-            # TODO: implement the below 2 functions in a new class that will manage the request.
-            data_recieved = self.get_data(buff_len)
+            req = request.Request(conn, buff_len)
 
-            self.process_request(data_recieved)
-            
-
-            print("message recieved: " + str(conn.recv(buff_len)))
-            t = int(input("value (int): "))
-            assert t >= 0
-            d = struct.pack('< I', t)
-            conn.sendall(d)
-
-    #TODO: implement it in a new  class
-    def get_data(self, buffer_length: int):
-        pass
-
-    #TODO: implement it in a new  class
-    def process_request(self):
-        pass
+            req.process_request()
