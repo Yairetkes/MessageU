@@ -11,16 +11,21 @@
 // TODO: remove __cdecl ?
 int __cdecl main(int argc, char **argv)
 {
-    int requestVal = 0;
+    int requestCode = 0;
 //    Tools tool = Tools();
     ClientUi ui = ClientUi();
-    requestVal = ui.userIntention();
-    printf("requestVal = %d\n", requestVal);
+    requestCode = ui.userIntention();
+    printf("requestCode = %d\n", requestCode);
 
     RequestBuilder rb = RequestBuilder();
 
     signRequest request = signRequest();
-    if (requestVal == 110) {
+
+    RequestBuilder::reqTuple requestTuple = rb.buildReq(requestCode);
+
+
+
+    if (requestCode == 110) {
         request = signRequest();
         std::strcpy(request.clientId, "1234");
 //        std::memcpy(&request.version, "1", 1);
@@ -49,6 +54,6 @@ int __cdecl main(int argc, char **argv)
     uReq.req = &request;
 
     ClientConnect clientconn = ClientConnect();
-    clientconn.mainConnection(&(uReq.buffer));
+    clientconn.mainConnection(&(requestTuple.uRequest.buffer), requestTuple.requestLength);
 
 }

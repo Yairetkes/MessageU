@@ -4,7 +4,7 @@
 
 #include "ClientConnect.h"
 
-    int ClientConnect::mainConnection(char *reqPtr){
+    int ClientConnect::mainConnection(char *reqPtr, int bufferLength){
 
             int headerLength = 23;
             // Initialize Winsock

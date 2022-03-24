@@ -9,6 +9,7 @@
 
 
 class RequestBuilder {
+public:
     union u_request{
         signRequest signReq;
         usersListRequest usLiReq;
@@ -25,7 +26,6 @@ class RequestBuilder {
         int requestLength;
     }retReqTuple;
 
-public:
     RequestBuilder();
 
     reqTuple buildReq(int reqCode);

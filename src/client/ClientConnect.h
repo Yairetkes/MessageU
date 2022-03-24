@@ -40,7 +40,7 @@ class ClientConnect {
     int recvbuflen = DEFAULT_BUFLEN;
 
 public:
-    int mainConnection(char *reqPtr);
+    int mainConnection(char *reqPtr, int bufferLength);
 
 };
 
