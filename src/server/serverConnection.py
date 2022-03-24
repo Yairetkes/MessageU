@@ -55,7 +55,7 @@ class serverConnection:
     
     def maintain_contact(self, conn: socket.socket, addr: str):
         """
-         This method is the main method of the class, it should manage the whole contact proccess
+        This method is the main method of the class, it should manage the whole contact proccess
         with the client.
         """
 

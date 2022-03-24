@@ -13,12 +13,8 @@ class Request:
         """
         # TODO: implemnt the method.
         self.request = NULL
-
-        buffer_recv = conn.recv(buffer_length)
-        print("message recieved: " + str(buffer_recv) + "\n\n")
-        packed_baffer = struct.unpack('<16cBHI255s160s', buffer_recv)
-        print("packed_baffer = " + str(packed_baffer))
-        # conn.sendall(d)
+        self.connection = conn
+        self.buffer_length = buffer_length
 
 
     #TODO: implement
@@ -32,4 +28,8 @@ class Request:
         create a sub class which is the relevant request, for instance getAllConnectionsReq...
         
         """
-        pass
+        buffer_recv = self.connection.recv(self.buffer_length)
+        print("message recieved: " + str(buffer_recv) + "\n\n")
+        packed_baffer = struct.unpack('<16cBHI255s160s', buffer_recv)
+        print("packed_baffer = " + str(packed_baffer))
+        # conn.sendall(d)
