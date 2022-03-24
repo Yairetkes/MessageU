@@ -72,9 +72,6 @@
             }
 
             // Send an initial buffer
-            // TODO: ask Matania how to pass the struct on this ptotocol.
-//            char temp[headerLength + reqPtr->payloadSize];
-//        std::memcpy(&temp, reqPtr, headerLength + reqPtr->payloadSize);
         iResult = send(ConnectSocket, reqPtr,438 , 0);
         if (iResult == SOCKET_ERROR) {
                 printf("send failed with error: %d\n",

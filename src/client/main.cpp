@@ -1,6 +1,7 @@
 #include "ClientConnect.h"
 #include "ClientUi.h"
 #include "Request.h"
+#include "RequestBuilder.h"
 #include "Tools.h"
 
 #include <cstring>
@@ -15,6 +16,8 @@ int __cdecl main(int argc, char **argv)
     ClientUi ui = ClientUi();
     requestVal = ui.userIntention();
     printf("requestVal = %d\n", requestVal);
+
+    RequestBuilder rb = RequestBuilder();
 
     signRequest request = signRequest();
     if (requestVal == 110) {
@@ -35,14 +38,15 @@ int __cdecl main(int argc, char **argv)
     // creating a new request object and passing the parameter of the request value (and other needed
     // parameters) to it.
 
+    // we insert the data into a union, because winsock send function accept const char pointer only.
     union u_struct{
-        signRequest req;
+        void *req;
         char buffer;
     } uReq;
 
 //    u_struct u_req = u_struct();
     //uReq.buffer = 'a';
-    uReq.req = request;
+    uReq.req = &request;
 
     ClientConnect clientconn = ClientConnect();
     clientconn.mainConnection(&(uReq.buffer));

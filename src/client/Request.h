@@ -12,21 +12,19 @@ struct RequestHeader {
     unsigned short code;
     unsigned int payloadSize;
 };
-#pragma pack(pop)
 
-#pragma pack(push,1)
 struct signRequest: RequestHeader{
     char name[255];
     char publicKey[160];
 };
-#pragma pack(pop)
 
-#pragma pack(push,1)
 struct usersListRequest: RequestHeader{
     usersListRequest(){
         payloadSize = 0;
     }
 };
+// TODO: add other requests structs...
+
 #pragma pack(pop)
 
 #endif //UNTITLED_REQUEST_H
