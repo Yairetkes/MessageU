@@ -59,11 +59,9 @@ class serverConnection:
         with the client.
         """
 
-        # TODO: change buffer length.
-        buff_len = 438
         with conn:
             print('Connected by', addr)
 
-            req = request.Request(conn, buff_len)
+            req = request.Request(conn)
 
             req.process_request()

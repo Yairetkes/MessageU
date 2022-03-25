@@ -10,25 +10,36 @@ version_idx = 1
 code_idx = 2
 payload_size_idx = 3
 payload_idx = 4
+REQUEST_MAX_LEN = 1024
+#TODO: change REQUEST_MAX_LEN to the right value.
+HEADER_LENGTH = 23
 
 class Request:
     """
     class Request will recieve data packet from client, proccess it and perform the command.
     """
-    def __init__(self, conn: socket.socket, buffer_length: int) -> None:
+    def __init__(self, conn: socket.socket) -> None:
         """
         The __init__ method will recieve data packet from client.
         """
         # TODO: implemnt the method.
         self.connection = conn
-        self.buffer_length = buffer_length
         self.messages = []
         self.client_users = []
 
-        buffer_recv = self.connection.recv(self.buffer_length)
-        print("message recieved: " + str(buffer_recv) + "\n\n")
-        self.packed_buffer = struct.unpack('<16cBHI255s160s', buffer_recv)
-        print("packed_buffer = " + str(self.packed_buffer))
+        # self.buffer_recv = self.connection.recv(self.buffer_length)
+        self.buffer_recv = self.connection.recv(REQUEST_MAX_LEN)
+        # TODO: might be unsafe to use recv()
+        # self.buffer_recv = self.connection.recv(23)
+        print("message recieved: " + str(self.buffer_recv) + "\n\n")
+        self.packed_header = struct.unpack('<16cBHI', self.buffer_recv[0:HEADER_LENGTH])
+        #self.packed_header = struct.unpack('<16cBHI255s160s', self.buffer_recv)
+        struct_str = "<16cBHI" + str(int.from_bytes(self.packed_header[payload_size_idx], byteorder="little")) + "s"
+        print("******* struct_str = ", struct_str)
+        self.request_length = HEADER_LENGTH + int.from_bytes( self.packed_header[payload_size_idx], byteorder="little")
+        print("******* request_length = ", str(self.request_length))
+        self.packed_request = struct.unpack(struct_str, self.buffer_recv[0:self.request_length])
+        print("packed_buffer = " + str(self.packed_request))
 
 
     # TODO: implement
@@ -62,12 +73,7 @@ class Request:
     # TODO: implement
     def process_request(self):
         """
-        suggestion - 
-        this method will proccess the request and return the below data -
-        1. request number.
-        2. all other needed data.
-        then it will return this values to serverConnection class in order for it to 
-        create a sub class which is the relevant request, for instance getAllConnectionsReq...
+        this method will proccess the request and call the right function to fullfil it.
         
         """
         code_signing = 110
@@ -79,23 +85,23 @@ class Request:
         code_send_sym_key = 152
         
 
-        if self.packed_buffer[code_idx] == code_signing:
+        if self.packed_header[code_idx] == code_signing:
             self.sign_client()
 
-        if self.packed_buffer[code_idx] == code_users_list:
+        if self.packed_header[code_idx] == code_users_list:
             self.send_users_list()
 
-        if self.packed_buffer[code_idx] == code_public_key:
+        if self.packed_header[code_idx] == code_public_key:
             self.get_public_key()
 
-        if self.packed_buffer[code_idx] == code_extract_msgs:
+        if self.packed_header[code_idx] == code_extract_msgs:
             self.extract_msgs()
 
-        if self.packed_buffer[code_idx] == code_send_msg:
+        if self.packed_header[code_idx] == code_send_msg:
             self.send_msg()
 
-        if self.packed_buffer[code_idx] == code_get_sym_key:
+        if self.packed_header[code_idx] == code_get_sym_key:
             self.get_sym_key()
 
-        if self.packed_buffer[code_idx] == code_send_sym_key:
+        if self.packed_header[code_idx] == code_send_sym_key:
             self.send_sym_key()
