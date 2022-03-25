@@ -2,6 +2,7 @@ from asyncio.windows_events import NULL
 from calendar import c
 import socket
 import struct
+import clientUser as cl
 
 
 # variables needed to the use of the class
@@ -27,24 +28,34 @@ class Request:
         self.messages = []
         self.client_users = []
 
-        # self.buffer_recv = self.connection.recv(self.buffer_length)
         self.buffer_recv = self.connection.recv(REQUEST_MAX_LEN)
         # TODO: might be unsafe to use recv()
-        # self.buffer_recv = self.connection.recv(23)
-        print("message recieved: " + str(self.buffer_recv) + "\n\n")
+        # print("message recieved: " + str(self.buffer_recv) + "\n\n")
+
+        # preparing the request - mostly unpacking.
         self.packed_header = struct.unpack('<16cBHI', self.buffer_recv[0:HEADER_LENGTH])
-        #self.packed_header = struct.unpack('<16cBHI255s160s', self.buffer_recv)
-        struct_str = "<16cBHI" + str(int.from_bytes(self.packed_header[payload_size_idx], byteorder="little")) + "s"
-        print("******* struct_str = ", struct_str)
+        struct_str = "<16sBHI" + str(int.from_bytes(self.packed_header[payload_size_idx], byteorder="little")) + "s"
         self.request_length = HEADER_LENGTH + int.from_bytes( self.packed_header[payload_size_idx], byteorder="little")
         print("******* request_length = ", str(self.request_length))
         self.packed_request = struct.unpack(struct_str, self.buffer_recv[0:self.request_length])
-        print("packed_buffer = " + str(self.packed_request))
+        print("packed_request = " + str(self.packed_request))
 
 
     # TODO: implement
-    def sign_client(self):
-        pass
+    def sign_client(self) -> int:
+        # TODO add to final report - by the protocol any user can sign up as many
+        #  times as he wants with different names. 
+        payload = self.packed_request[payload_idx]
+        name, public_key = (payload.split(b'\x00'))
+        print("name = ", name)
+        print("public_key = ", public_key)
+
+        if name in self.client_users:
+            raise NameError('The name already appear in the users list (the user already signed)')
+        else:
+            client = cl.clientUser(name, public_key)
+            self.client_users.append(client)
+            return client.get_id()
 
     # TODO: implement
     def send_users_list():
@@ -71,6 +82,14 @@ class Request:
         pass
 
     # TODO: implement
+    def error_response():
+        pass
+
+    # TODO: implement
+    def sign_response(id: int):
+        pass
+
+    # TODO: implement
     def process_request(self):
         """
         this method will proccess the request and call the right function to fullfil it.
@@ -86,7 +105,12 @@ class Request:
         
 
         if self.packed_header[code_idx] == code_signing:
-            self.sign_client()
+            try:
+                id = self.sign_client()
+                self.sign_response(id)
+            except NameError:
+                print("NameError when trying to sign a new client user")
+                self.error_response()
 
         if self.packed_header[code_idx] == code_users_list:
             self.send_users_list()
