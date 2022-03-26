@@ -7,7 +7,11 @@
 
 #include <iostream>
 
+const int MESSAGE_MAX_LEN = 1001;
+
 class ClientUi {
+    // should be compatible with this variable at file Request.py on server (minus header
+    // which is 23 bytes long)
     int requestLength = 3;
     // TODO: add encapsulation (private and public) to all class's methods and fields.
     const char *uiMessage = "MessageU client at your service.\n"
@@ -22,6 +26,12 @@ class ClientUi {
                             "?";
 
 public:
+    struct uiData{
+        int reqCode;
+        char userName[255];
+        char messageText[MESSAGE_MAX_LEN];
+    };
+
     int userIntention();
 
 
