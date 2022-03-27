@@ -13,6 +13,9 @@ payload_size_idx = 3
 payload_idx = 4
 REQUEST_MAX_LEN = 1024
 #TODO: change REQUEST_MAX_LEN to the right value.
+# should be compatible with this variable at file ClientUi.cpp on server (plus header
+# which is 23 bytes long)
+
 HEADER_LENGTH = 23
 
 class Request:
@@ -41,7 +44,7 @@ class Request:
         print("packed_request = " + str(self.packed_request))
 
 
-    # TODO: implement
+    # TODO: test
     def sign_client(self) -> int:
         # TODO add to final report - by the protocol any user can sign up as many
         #  times as he wants with different names. 

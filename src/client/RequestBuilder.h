@@ -7,9 +7,9 @@
 
 #include "Request.h"
 
-
 class RequestBuilder {
 public:
+    // This union will contain the request structs, but only the desired struct will be initialized.
     union u_request{
         signRequest signReq;
         usersListRequest usLiReq;
@@ -19,6 +19,7 @@ public:
         u_request();
     } uReq;
 
+    // The struct which returned from function buildReq().
     struct reqTuple{
         reqTuple();
 
@@ -28,7 +29,8 @@ public:
 
     RequestBuilder();
 
-    reqTuple buildReq(int reqCode);
+    // this function really is building the struct.
+    reqTuple buildReq(int reqCode, char *userName, char *messageText);
 
 
 };
