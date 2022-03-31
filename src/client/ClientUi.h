@@ -6,12 +6,16 @@
 #define UNTITLED_CLIENTUI_H
 
 #include <iostream>
-#include <stdio.h>
+#include <cstdio>
+#include <string>
 #include <stdlib.h>
 #include <string.h>
+#include <fstream>
 
-const int MESSAGE_MAX_LEN = 1001;
+const int MESSAGE_MAX_LEN = 1024 - 23;
 const int Max_NAME_LEN = 255;
+const int ID_LENGTH = 16;
+const std::string FILE_NAME = "me.info";
 
 // This claas handles with user's UI.
 class ClientUi {
@@ -31,13 +35,16 @@ class ClientUi {
                             "?";
 
     const char *signingMessage = "Please enter user name:";
+    const char *publicKeyMessage = "Please enter the ID of the user you wish to get his public key";
 
 public:
 
     struct uiData{
         int reqCode;
-        char userName[255];
+        char userName[Max_NAME_LEN];
+        char userId[ID_LENGTH];
         char messageText[MESSAGE_MAX_LEN];
+        int messageType;
     } userData;
 
     uiData userIntention();

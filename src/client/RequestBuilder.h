@@ -13,7 +13,9 @@ public:
     union u_request{
         signRequest signReq;
         usersListRequest usLiReq;
-        // TODO: add other requests...
+        publicKeyRequest pubKeyReq;
+        sendMessageRequest sendMsgReq;
+        getMessagesRequest getMsgsReq;
         char buffer;
 
         u_request();
