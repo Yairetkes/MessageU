@@ -20,20 +20,20 @@ RequestBuilder::u_request::u_request() {
 
 }
 
-RequestBuilder::reqTuple RequestBuilder::buildReq(int reqCode, char *userName, char *messageText ) {
-    if (reqCode == 110){
+RequestBuilder::reqTuple RequestBuilder::buildReq(ClientUi::uiData userData) {
+    if (userData.reqCode == 110){
         // TODO: test this
         uReq.signReq = signRequest();
-        strcpy(uReq.signReq.name,  userName);
+        strcpy(uReq.signReq.name,  userData.userName);
         strcpy(uReq.signReq.publicKey,  "This is public key. replace me to the real shit!!");
         // TODO: strcpy is not safe
         // TODO: assign the right public key.
 
         retReqTuple.uRequest = uReq;
-        retReqTuple.requestLength = uReq.signReq.payloadSize + sizeof(uReq.signReq);
+        retReqTuple.requestLength = uReq.signReq.payloadSize + HEADER_LEN;
     }
 
-    if (reqCode == 120){
+    if (userData.reqCode == 120){
         // TODO: test this
         uReq.usLiReq = usersListRequest();
         strcpy(uReq.usLiReq.clientId,  "avi");
@@ -44,6 +44,8 @@ RequestBuilder::reqTuple RequestBuilder::buildReq(int reqCode, char *userName, c
         retReqTuple.uRequest = uReq;
         retReqTuple.requestLength = uReq.usLiReq.payloadSize + sizeof(uReq.usLiReq);
     }
+
+    // TODO: continue here.
 
 
 

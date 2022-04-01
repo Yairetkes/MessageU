@@ -15,12 +15,14 @@
  *
  * */
 
-const int SIGN_REQ_LEN = 438;
 const int NAME_LEN = 255;
 const int PUBLIC_KEY_LEN = 160;
+const int HEADER_LEN = 23;
+const int SIGN_REQ_LEN = NAME_LEN + PUBLIC_KEY_LEN; // without header!!
 const int PUBLIC_KEY_SIZE = 16;
 const int ID_LEN = 16;
 const int MAX_MESSAGE_LEN = 1024;
+
 // TODO: change the latter to the real value.
 const char CURRENT_VERSION = 1;
 

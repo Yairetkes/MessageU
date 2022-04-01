@@ -6,6 +6,7 @@
 #define UNTITLED_REQUESTBUILDER_H
 
 #include "Request.h"
+# include "ClientUi.h"
 
 class RequestBuilder {
 public:
@@ -32,7 +33,7 @@ public:
     RequestBuilder();
 
     // this function really is building the struct.
-    reqTuple buildReq(int reqCode, char *userName, char *messageText);
+    reqTuple buildReq(ClientUi::uiData userData);
 
 
 };

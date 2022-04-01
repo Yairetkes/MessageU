@@ -15,15 +15,13 @@ int __cdecl main(int argc, char **argv)
 //    Tools tool = Tools();
     ClientUi ui = ClientUi();
     userData = ui.userIntention();
-    printf("userData.reqCode = %d", userData.reqCode);
-    printf("userData.userName = %s", userData.userName);
-
 
     RequestBuilder rb = RequestBuilder();
 
     //signRequest request = signRequest();
 
-    RequestBuilder::reqTuple requestTuple = rb.buildReq(userData.reqCode, userData.userName, userData.messageText);
+    RequestBuilder::reqTuple requestTuple = rb.buildReq(userData);
+    // RequestBuilder::reqTuple requestTuple = rb.buildReq(userData.reqCode, userData.userName, userData.messageText);
 
 
 

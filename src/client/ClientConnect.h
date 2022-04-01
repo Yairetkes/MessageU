@@ -16,6 +16,7 @@
 #include <cstdio>
 
 #include "Request.h"
+#include "Tools.h"
 
 
 // Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib

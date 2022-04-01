@@ -19,10 +19,14 @@
             hints.ai_socktype = SOCK_STREAM;
             hints.ai_protocol = IPPROTO_TCP;
 
+            Tools::serverInfo connectionInfo;
+            Tools tools = Tools();
+            connectionInfo = tools.readServerInfo();
+
             // Resolve the server address and port
-            iResult = getaddrinfo("127.0.0.1", DEFAULT_PORT, &hints, &result);
+            iResult = getaddrinfo(connectionInfo.ip.c_str(), connectionInfo.host.c_str(), &hints, &result);
             if ( iResult != 0 ) {
-                printf("getaddrinfo failed with error: %d\n", iResult);
+                printf("geta    ddrinfo failed with error: %d\n", iResult);
 
                 WSACleanup();
 
