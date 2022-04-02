@@ -2,7 +2,9 @@ from asyncio.windows_events import NULL
 from calendar import c
 import socket
 import struct
+from typing_extensions import Self
 import clientUser as cl
+import respond
 
 
 # variables needed to the use of the class
@@ -15,6 +17,13 @@ REQUEST_MAX_LEN = 1024
 #TODO: change REQUEST_MAX_LEN to the right value.
 # should be compatible with this variable at file ClientUi.cpp on server (plus header
 # which is 23 bytes long)
+
+ERROR_RES_CODE = 9000
+SUCCESS_SIGN_CODE = 2100
+US_LIST_RES_CODE = 2101
+PUB_KEY_RES_CEDE = 2102
+MSG_SENT_RES_CODE = 2103
+WAIT_MSGS_RES_CODE = 2104
 
 HEADER_LENGTH = 23
 
@@ -85,8 +94,9 @@ class Request:
         pass
 
     # TODO: implement
-    def error_response():
-        pass
+    def error_response(self):
+        res = respond.Respond(ERROR_RES_CODE, 0, bytes(), self.connection)
+        res.send()
 
     # TODO: implement
     def sign_response(id: int):
@@ -98,13 +108,13 @@ class Request:
         this method will proccess the request and call the right function to fullfil it.
         
         """
-        code_signing = 110
-        code_users_list = 120
-        code_public_key = 130
-        code_extract_msgs = 140
-        code_send_msg = 150
-        code_get_sym_key = 151
-        code_send_sym_key = 152
+        code_signing = 1100
+        code_users_list = 1101
+        code_public_key = 1102
+        code_extract_msgs = 1104
+        code_send_msg = 1103
+        # code_get_sym_key = 151
+        # code_send_sym_key = 152
         
 
         if self.packed_header[code_idx] == code_signing:
@@ -126,9 +136,3 @@ class Request:
 
         if self.packed_header[code_idx] == code_send_msg:
             self.send_msg()
-
-        if self.packed_header[code_idx] == code_get_sym_key:
-            self.get_sym_key()
-
-        if self.packed_header[code_idx] == code_send_sym_key:
-            self.send_sym_key()
