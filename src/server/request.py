@@ -125,7 +125,7 @@ class Request:
         if id not in [user.get_id() for user in self.client_users]:
             raise NameError('The id does not appear in the users list.')
         else:
-            mesg = msg.Message(id, )#TODO: continue here - create id 
+            mesg = msg.Message(id, ) #TODO: continue here - create id 
             # self.client_users.append(client)
             # return client.get_id()
 
