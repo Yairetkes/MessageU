@@ -1,13 +1,19 @@
 from asyncio.windows_events import NULL
 from calendar import c
+from distutils.log import error
 import socket
 import struct
-from typing_extensions import Self
 import clientUser as cl
 import respond
-
+import message as msg
 
 # variables needed to the use of the class
+code_signing = 1100
+code_users_list = 1101
+code_public_key = 1102
+code_extract_msgs = 1104
+code_send_msg = 1103
+
 client_id_idx = 0
 version_idx = 1
 code_idx = 2
@@ -37,8 +43,8 @@ class Request:
         """
         # TODO: implemnt the method.
         self.connection = conn
-        self.messages = []
-        self.client_users = []
+        self.messages = [msg.Message]
+        self.client_users = [cl.clientUser]
 
         self.buffer_recv = self.connection.recv(REQUEST_MAX_LEN)
         # TODO: might be unsafe to use recv()
@@ -62,28 +68,66 @@ class Request:
         print("name = ", name)
         print("public_key = ", public_key)
 
-        if name in self.client_users:
+        if self.packed_header[int(client_id_idx)] in [user.get_id() for user in self.client_users]:
             raise NameError('The name already appear in the users list (the user already signed)')
         else:
             client = cl.clientUser(name, public_key)
             self.client_users.append(client)
             return client.get_id()
 
+    # TODO: test
+    def send_users_list(self):
+        if (not self.client_users):
+            raise error("no other clients!")
+        values = []
+        struct_str = '<'
+        for user in self.client_users:
+            if user.get_id == self.packed_header[client_id_idx]:
+                continue # becuse this is our clients ID.
+            else:
+                values.append(bytes(str(user.get_id()), encoding='utf8'))
+                values.append(bytes(str(user.get_name()), encoding='utf8'))
+                struct_str += '16s255s'
+
+        payload = struct.pack(struct_str, *values)
+        res = respond.Respond(code_users_list, len(payload), payload, self.connection)
+        res.send()
+
+    #TODO: test
+    def get_public_key(self):
+        id = "-1"
+        pub_key = "-1"
+        for user in self.client_users:
+            if user.get_id == int(self.packed_request[payload_idx]):
+                id = str(user.get_id())
+                pub_key = str(user.get_public_key())
+        
+        if id == "-1":
+            raise NameError("there is no client with ID " + str(self.packed_request[payload_idx]))
+
+        payload = struct.pack('<16s160s', bytes(id,encoding='utf8'), bytes(pub_key,encoding='utf8'))
+        res = respond.Respond(PUB_KEY_RES_CEDE, len(payload), payload, self.connection)
+        res.send()
+
     # TODO: implement
-    def send_users_list():
+    def extract_msgs(self):
         pass
 
-    #TODO: implement
-    def get_public_key():
-        pass
+    # TODO: test
+    def send_msg(self):
+        payload = self.packed_request[payload_idx]
+        id, type, size, message = (payload.split(b'\x00'))
+        print("id = ", id)
+        print("type = ", type)
+        print("size = ", size)
+        print("message = ", message)
 
-    # TODO: implement
-    def extract_msgs():
-        pass
-
-    # TODO: implement
-    def send_msg():
-        pass
+        if id not in [user.get_id() for user in self.client_users]:
+            raise NameError('The id does not appear in the users list.')
+        else:
+            mesg = msg.Message(id, )#TODO: continue here - create id 
+            # self.client_users.append(client)
+            # return client.get_id()
 
     # TODO: implement
     def get_sym_key():
@@ -108,15 +152,6 @@ class Request:
         this method will proccess the request and call the right function to fullfil it.
         
         """
-        code_signing = 1100
-        code_users_list = 1101
-        code_public_key = 1102
-        code_extract_msgs = 1104
-        code_send_msg = 1103
-        # code_get_sym_key = 151
-        # code_send_sym_key = 152
-        
-
         if self.packed_header[code_idx] == code_signing:
             try:
                 id = self.sign_client()
@@ -126,13 +161,25 @@ class Request:
                 self.error_response()
 
         if self.packed_header[code_idx] == code_users_list:
-            self.send_users_list()
+            try:
+                self.send_users_list()
+            except error:
+                print("Error! theres no other clients that are signed")
+                self.error_response()
 
         if self.packed_header[code_idx] == code_public_key:
-            self.get_public_key()
+            try:
+                self.get_public_key()
+            except NameError:
+                print("The requested user does not appear to exist.")
+                self.error_response()
 
         if self.packed_header[code_idx] == code_extract_msgs:
             self.extract_msgs()
 
         if self.packed_header[code_idx] == code_send_msg:
-            self.send_msg()
+            try:
+                self.send_msg()
+            except NameError:
+                print("The destination user does not seem to apear.")
+                self.error_response()
