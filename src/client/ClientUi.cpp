@@ -24,7 +24,7 @@ ClientUi::uiData ClientUi::userIntention() {
     if (input == 110){
         // checking if file me.info exist.
         std::ifstream f(FILE_NAME.c_str());
-        // TODO: check if file exist. this check seem to not work
+        // TODO: check if file exist. this check seem to not work, maybe becuse I didnt supply full path of file??
          if (!(f.good())) {
             printf(signingMessage);
             // Please enter user name:
@@ -36,6 +36,7 @@ ClientUi::uiData ClientUi::userIntention() {
                 std::getline(std::cin, strInput);
             }
             strcpy(userData.userName,strInput.c_str());
+            // TODO: insert here public key?
              return userData;
 
         } else {// if file me.info exist.
@@ -56,6 +57,7 @@ ClientUi::uiData ClientUi::userIntention() {
         std::getline(std::cin, strInput);
 
         strcpy(userData.userId,strInput.c_str());
+
         return userData;
     }
 

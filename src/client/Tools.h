@@ -12,6 +12,7 @@
 
 //#define SERVER_INFO_FILE_NAME "server.info"
 const std::string SERVER_INFO_FILE_NAME = "server.info";
+const std::string CLIENT_INFO_FILE_NAME = "me.info";
 
 class Tools {
 public:
@@ -21,11 +22,19 @@ public:
         std::string host;
     }serInfo;
 
+    struct meInfo{
+        std::string clientName;
+        std::string clientID;
+        std::string privateKey; // TODO: should be string or some encrypting type??
+    }myInfo;
+
     // this method reads data from file to string
     std::string readIntoStr( std::string fileName);
 
     // this method read the information of server from file (ip and port).
     serverInfo readServerInfo();
+
+    meInfo readClientInfo();
 
     // strcpy is an unsafe function, so I had to add this function, which block the option
     // of buffer overflow.

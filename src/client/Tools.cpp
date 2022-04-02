@@ -11,10 +11,11 @@ std::string Tools::readIntoStr( std::string fileName){
     std::ifstream file;
     file.open(fullPathFile, std::ios::in);
 
-    // TODO: super impoetant: send to Matanya my project with the next 2 lines undocumented (and document
-    //  the above 4 lines). is should work on matanyas pc (but in my pc it wont work (idk why)).
+    // TODO: super important: send to Matanya my project with the next 2 lines undocumented (and document
+    //  the above 4 lines). it should work on Matanyas pc (but in my pc it wont work (idk why, for some reason
+    //  it requires the pull path)).
 
-//    std::ifstream file;
+//    std::ifstream file; // TODO: dont erase!!!
 //    file.open(fileName, std::ios::in);
 
     if (!file.is_open()) {
@@ -37,11 +38,10 @@ std::string Tools::readIntoStr( std::string fileName){
 
     printf(data.c_str());
 
-    return data;
+    return std::string(data.c_str());
 }
 
 Tools::serverInfo Tools::readServerInfo(){
-    // continue debugging from here
     std::string data = Tools::readIntoStr( SERVER_INFO_FILE_NAME);
 
     std::string delimiter = ":";
@@ -52,6 +52,19 @@ Tools::serverInfo Tools::readServerInfo(){
     serInfo.ip = ip;
 
     return serInfo;
+}
+
+Tools::meInfo Tools::readClientInfo() {
+    std::string data = Tools::readIntoStr( CLIENT_INFO_FILE_NAME);
+
+    std::string delimiter = "\n";
+    myInfo.clientName = data.substr(0, data.find(delimiter));
+    data = data.substr(myInfo.clientName.length() + 1);
+    myInfo.clientID = data.substr(0, data.find(delimiter));
+    myInfo.privateKey = data.substr( myInfo.clientID.length() + 1);
+
+    return myInfo;
+
 }
 
 

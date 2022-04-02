@@ -5,8 +5,9 @@
 #ifndef UNTITLED_REQUESTBUILDER_H
 #define UNTITLED_REQUESTBUILDER_H
 
-#include "Request.h"
+# include "Request.h"
 # include "ClientUi.h"
+# include "Tools.h"
 
 class RequestBuilder {
 public:

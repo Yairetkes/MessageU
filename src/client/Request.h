@@ -53,7 +53,7 @@ struct usersListRequest: RequestHeader{
 };
 
 struct publicKeyRequest: RequestHeader{
-    char clientId[ID_LEN];
+    char destUserId[ID_LEN];
     publicKeyRequest(){
         code = 1102;
         payloadSize = PUBLIC_KEY_SIZE;
@@ -61,7 +61,7 @@ struct publicKeyRequest: RequestHeader{
 };
 
 struct sendMessageRequest: RequestHeader{
-    char clientId[ID_LEN];
+    char destUserId[ID_LEN];
     char messageType;
     int contentSize;
     char messageContent[MAX_MESSAGE_LEN];
