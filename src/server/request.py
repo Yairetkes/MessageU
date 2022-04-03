@@ -53,7 +53,7 @@ class Request:
         # preparing the request - mostly unpacking.
         self.packed_header = struct.unpack('<16sBHI', self.buffer_recv[0:HEADER_LENGTH])
         # struct_str = "<16sBHI" + str(int.from_bytes(self.packed_header[payload_size_idx], byteorder="little")) + "s"
-        self.payload_length = HEADER_LENGTH + int.from_bytes( self.packed_header[payload_size_idx], byteorder="little")
+        self.payload_length = HEADER_LENGTH + self.packed_header[payload_size_idx]
         self.packed_payload = bytes()
         # print("******* request_length = ", str(self.request_length))
         # self.packed_request = struct.unpack(struct_str, self.buffer_recv[0:self.request_length])
@@ -61,7 +61,7 @@ class Request:
 
 
     # TODO: test
-    def sign_client(self) -> int:
+    def sign_client(self):
         # TODO add to final report - by the protocol any user can sign up as many
         #  times as he wants with different names.
         struct_str = '255s160s'
@@ -76,8 +76,9 @@ class Request:
             client = cl.clientUser(name, public_key)
             self.client_users.append(client)
 
-            res = respond.Respond()
-            return client.get_id()
+            payload = struct.pack('<16s', bytes(str(id), encoding='utf8'))
+            res = respond.Respond(SUCCESS_SIGN_CODE,len(payload), payload, self.connection)
+            res.send()
 
     # TODO: test
     def send_users_list(self):
