@@ -17,6 +17,7 @@
 
 #include "Request.h"
 #include "Tools.h"
+#include "Respond.h"
 
 
 // Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib
@@ -35,13 +36,13 @@ class ClientConnect {
     struct addrinfo *result = NULL,
             *ptr = NULL,
             hints;
-    const char *sendbuf = "this is a test";
+    // const char *sendbuf = "this is a test";
     char recvbuf[DEFAULT_BUFLEN];
     int iResult;
     int recvbuflen = DEFAULT_BUFLEN;
 
 public:
-    int mainConnection(char *reqPtr, int bufferLength);
+    int mainConnection(char *reqPtr, int bufferLength, signRequest signReq);
 
 };
 

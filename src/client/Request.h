@@ -25,12 +25,13 @@ const int MAX_MESSAGE_LEN = 1024;
 
 // TODO: change the latter to the real value.
 const char CURRENT_VERSION = 1;
+#include <cstdint>
 
 struct RequestHeader {
     char clientId[ID_LEN];
-    unsigned char version;
-    unsigned short code;
-    unsigned int payloadSize;
+    uint8_t version;
+    uint16_t code;
+    uint32_t payloadSize;
     RequestHeader(){
         version = CURRENT_VERSION;
     }
@@ -62,8 +63,8 @@ struct publicKeyRequest: RequestHeader{
 
 struct sendMessageRequest: RequestHeader{
     char destUserId[ID_LEN];
-    char messageType;
-    int contentSize;
+    uint8_t messageType;
+    uint32_t contentSize;
     char messageContent[MAX_MESSAGE_LEN];
     // TODO: should support end to end decryption.
     sendMessageRequest(){

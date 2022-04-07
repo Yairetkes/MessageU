@@ -41,6 +41,7 @@ std::string Tools::readIntoStr( std::string fileName){
     return std::string(data.c_str());
 }
 
+
 Tools::serverInfo Tools::readServerInfo(){
     std::string data = Tools::readIntoStr( SERVER_INFO_FILE_NAME);
 
@@ -65,6 +66,47 @@ Tools::meInfo Tools::readClientInfo() {
 
     return myInfo;
 
+}
+
+unsigned char* Tools::strToHexStr(std::string hexaStr) {
+    int n;
+    unsigned char* resStr = new unsigned char[hexaStr.length() / 2];
+    std::string couple;
+    for (size_t i = 0; i < hexaStr.length() - 1; i += 2) {
+        couple = hexaStr.substr(i, 2);
+        std::stringstream ss(couple);
+        ss >> std::hex >> n;
+
+
+        resStr[i / 2] = n;
+    }
+
+
+    return resStr;
+}
+
+
+const char* Tools::hexStrToStr(const unsigned char* hexArray, size_t arraySize)
+{
+    static char syms[] = "0123456789ABCDEF";
+
+    std::stringstream ss;
+    for (size_t i = 0; i < arraySize; i++) {
+        ss << syms[((hexArray[i] >> 4) & 0xf)] << syms[hexArray[i] & 0xf];
+    }
+    return ss.str().c_str();
+}
+
+// TODO: probably need to pass file name as full path!! test it
+int Tools::writeToFile(const std::string& fName, const std::string& dataTofile)
+{
+    std::ofstream file;
+    file.open(fName);
+    if (!file.is_open())
+        return 1;
+    file << dataTofile;
+    file.close();
+    return 0;
 }
 
 

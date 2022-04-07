@@ -11,6 +11,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <fstream>
+#include <sstream>
+
+#include "Tools.h"
 
 const int MESSAGE_MAX_LEN = 1024 - 23;
 const int Max_NAME_LEN = 255;

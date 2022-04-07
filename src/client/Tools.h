@@ -6,6 +6,7 @@
 #define UNTITLED_TOOLS_H
 
 #include<fstream>
+#include <sstream>
 #include<iostream>
 #include<iterator>
 #include <string>
@@ -26,6 +27,7 @@ public:
         std::string clientName;
         std::string clientID;
         std::string privateKey; // TODO: should be string or some encrypting type??
+        std::string publicKey;
     }myInfo;
 
     // this method reads data from file to string
@@ -35,6 +37,12 @@ public:
     serverInfo readServerInfo();
 
     meInfo readClientInfo();
+
+    unsigned char* Tools::strToHexStr(std::string hexStr);
+
+    const char* Tools::hexStrToStr(const unsigned char* binArray, size_t arrSize);
+
+    int Tools::writeToFile(const std::string& fName, const std::string& dataTofile);
 
     // strcpy is an unsafe function, so I had to add this function, which block the option
     // of buffer overflow.

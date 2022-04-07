@@ -6,7 +6,10 @@
 
 ClientUi::uiData ClientUi::userIntention() {
     int input = -1;
+    unsigned int idInput = 0;
     std::string strInput;
+
+    Tools tools = Tools();
 
     while(input == -1) {
         printf(uiMessage);
@@ -23,9 +26,21 @@ ClientUi::uiData ClientUi::userIntention() {
     // it's a sign up request.
     if (input == 110){
         // checking if file me.info exist.
-        std::ifstream f(FILE_NAME.c_str());
+        std::string cwdPath = "C:\\Users\\Yair\\source\\repos\\MessageU\\src\\client\\";
+        std::string fullPathFile = cwdPath.append(FILE_NAME);
+        std::ifstream file;
+        file.open(fullPathFile, std::ios::in);
+
+        // TODO: super important: send to Matanya my project with the next 2 lines undocumented (and document
+        //  the above 4 lines). it should work on Matanyas pc (but in my pc it wont work (idk why, for some reason
+        //  it requires the full path)).
+
+//      std::ifstream file; // TODO: dont erase!!!
+//      file.open(FILE_NAME, std::ios::in);
+
+        //std::ifstream file(FILE_NAME.c_str());// TODO: dont erase!!!
         // TODO: check if file exist. this check seem to not work, maybe becuse I didnt supply full path of file??
-         if (!(f.good())) {
+         if (!file.is_open()) {
             printf(signingMessage);
             // Please enter user name:
              std::cin.ignore();
@@ -41,6 +56,7 @@ ClientUi::uiData ClientUi::userIntention() {
 
         } else {// if file me.info exist.
             printf("Error! \nme.info file already exist.");
+            file.close();
             exit(-1);
         }
     }
@@ -54,9 +70,12 @@ ClientUi::uiData ClientUi::userIntention() {
     if (input == 130){
         printf(publicKeyMessage);
         std::cin.ignore();
-        std::getline(std::cin, strInput);
 
-        strcpy(userData.userId,strInput.c_str());
+        std::getline(std::cin, strInput); // original
+
+        // memcpy_s(userData.userId, 16,hex((uint8_t*)arr, sizeof(strInput) ), 16);
+        memcpy_s(userData.userId, 16, tools.strToHexStr(strInput), 16);
+        // strcpy(userData.userId,tools.strToHexStr( strInput)); // original
 
         return userData;
     }

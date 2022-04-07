@@ -4,7 +4,7 @@
 
 #include "ClientConnect.h"
 
-    int ClientConnect::mainConnection(char *reqPtr, int bufferLength){
+    int ClientConnect::mainConnection(char *reqPtr, int bufferLength, signRequest signReq){
 
             int headerLength = 23;
             // Initialize Winsock
@@ -76,7 +76,7 @@
             }
 
             // Send an initial buffer
-        iResult = send(ConnectSocket, reqPtr,438 , 0);
+        iResult = send(ConnectSocket, reqPtr,bufferLength , 0);
         if (iResult == SOCKET_ERROR) {
                 printf("send failed with error: %d\n",
 
@@ -107,13 +107,19 @@
                 return 1;
             }
 
+        respondBuffer resBuf = respondBuffer();
+
             // Receive until the peer closes the connection
             do {
-
-                iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
+                iResult = recv(ConnectSocket, resBuf.buffer, sizeof(respondHeader), 0);
                 if (iResult > 0) {
-                    printf("Bytes received: %d\n", iResult);
-                    printf("message received: \n%d\n", *recvbuf);
+
+                    char* payload = new char[resBuf.resHeader.payloadSize];
+                    int iResult = recv(ConnectSocket, payload, resBuf.resHeader.payloadSize, 0);
+                    respondSwitch(resBuf.resHeader, payload, resBuf.resHeader.payloadSize, signReq);
+
+                    //printf("Bytes received: %d\n", iResult);
+                    //printf("message received: \n%d\n", *recvbuf);
                 }
                 else if ( iResult == 0 )
                     printf("Connection closed\n");
